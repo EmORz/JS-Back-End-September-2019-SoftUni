@@ -16,30 +16,62 @@ function getContentType(url) {
         return 'image/x-icon	'
     }
 }
+
 module.exports = (req, res) => {
     const pathname = url.parse(req.url).pathname;
 
     if (pathname.startsWith('/content') && req.method === 'GET') {
 
-        fs.readFile(`./${pathname}`, 'utf-8', (error, data) => {
-            if (error) {
-                console.log(error);
+        if (pathname.endsWith('png') || pathname.endsWith('jpg') || pathname.endsWith('jpeg') || pathname.endsWith('ico') && req.method === 'GET') {
 
-                res.writeHead(404, {
-                    'Content-Type': 'text/plain'
+            fs.readFile(`./${pathname}`, (error, data) => {
+
+                if (error) {
+                    console.log(error);
+
+                    res.writeHead(404, {
+                        'Content-Type': 'text/plain'
+                    });
+
+                    res.write('Whoops! File not found!');
+                    res.end();
+                    return;
+                }
+
+                console.log(pathname);
+                res.writeHead(200, {
+                    'Content-Type': getContentType(pathname)
                 });
-                res.write('Whoops! File not found!');
-                res.end();
-                return;
-            }
-            console.log(pathname);
 
-            res.writeHead(200, {
-                'Content-Type': getContentType(pathname)
-            });
-            res.write(data);
-            res.end();
-        });
+                res.write(data);
+                res.end();
+            })
+
+        } else {
+
+            fs.readFile(`./${pathname}`, 'utf-8', (error, data) => {
+
+                if (error) {
+                    console.log(error);
+
+                    res.writeHead(404, {
+                        'Content-Type': 'text/plain'
+                    });
+
+                    res.write('Whoops! File not found!');
+                    res.end();
+                    return;
+                }
+
+                console.log(pathname);
+                res.writeHead(200, {
+                    'Content-Type': getContentType(pathname)
+                });
+                
+                res.write(data);
+                res.end();
+            })
+        };
     } else {
         return true;
     }
