@@ -22,7 +22,7 @@ module.exports = (req, res) => {
 
     if (pathname.startsWith('/content') && req.method === 'GET') {
 
-        if (pathname.endsWith('png') || pathname.endsWith('jpg') || pathname.endsWith('jpeg') || pathname.endsWith('ico') && req.method === 'GET') {
+        if (pathname.endsWith('png') || pathname.endsWith('jpg') || pathname.endsWith('jpeg') || pathname.endsWith('ico')) {
 
             fs.readFile(`./${pathname}`, (error, data) => {
 
