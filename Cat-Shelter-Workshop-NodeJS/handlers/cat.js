@@ -100,6 +100,41 @@ module.exports = (req, res) => {
             res.write(modifiedCat);
             res.end();
         });
+    } else if (pathname.includes('/cats-find-new-home') && req.method === 'GET') {
+
+        const id = Number(req.url.split('/cats-find-new-home/').filter(el => el !== '')[0]);
+        const catFindNewHome = cats.find(cat => cat.id === id);
+        const filePath = path.normalize(path.join(__dirname, '../views/catShelter.html'));
+
+        fs.readFile(filePath, (error, data) => {
+            if (error) {
+                res.writeHead(404, {
+                    'Content-Type': 'text/plain'
+                });
+                res.write('Whoops! File not found!');
+                res.end();
+                return;
+            }
+
+            res.writeHead(200, {
+                'Content-Type': 'text/html'
+            });
+
+            const catBreedPlaceholder = breeds.map(breed => {
+                return breed === catFindNewHome.breed
+                    ? `<option value="${breed}" selected="selected">${breed}</option>`
+                    : `<option value="${breed}">${breed}</option>`
+            }).join('');
+
+            let modifiedCat = data.toString().replace('{{id}}', id);
+            modifiedCat = modifiedCat.toString().replace('{{name}}', catFindNewHome.name);
+            modifiedCat = modifiedCat.toString().replace('{{description}}', catFindNewHome.description);
+            modifiedCat = modifiedCat.toString().replace('{{image}}', catFindNewHome.image);
+            modifiedCat = modifiedCat.toString().replace('{{catBreeds}}', catBreedPlaceholder);
+
+            res.write(modifiedCat);
+            res.end();
+        });
     } else if (pathname === '/cats/add-breed' && req.method === 'POST') {
 
         let formData = '';
@@ -161,7 +196,7 @@ module.exports = (req, res) => {
 
                 let allCats = JSON.parse(data);
                 allCats.push({ id: allCats.length + 1, ...fields, image: files.upload.name });
-                let json = JSON.stringify(allCats);
+                const json = JSON.stringify(allCats);
 
                 fs.writeFile('./data/cats.json', json, () => {
                     res.writeHead(301, { location: '/' });
@@ -208,9 +243,30 @@ module.exports = (req, res) => {
                 });
             });
         });
-    } else {
-        return true;
-    }
+    } else if (pathname.includes('/cats-find-new-home') && req.method === 'POST') {
+
+        const id = Number(req.url.split('/cats-find-new-home/').filter(el => el !== '')[0]);
+        console.log(id);
+        
+        fs.readFile('./data/cats.json', 'utf-8', (err, data) => {
+
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+
+            let allCats = JSON.parse(data);
+            allCats = allCats.filter(cat => cat.id !== id);
+            const json = JSON.stringify(allCats);
+            console.log(json)
+            fs.writeFile('./data/cats.json', json, () => {
+                res.writeHead(301, { location: '/' });
+                res.end();
+            });
+    });
+} else {
+    return true;
+}
 }
 
 
