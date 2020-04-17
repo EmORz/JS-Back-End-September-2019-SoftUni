@@ -5,85 +5,54 @@ const cats = require('../data/cats.json');
 const breeds = require('../data/breeds.json');
 const qs = require('querystring');
 const formidable = require('formidable');
+const helpers = require('./helpers');
 
 module.exports = (req, res) => {
 
     const pathname = url.parse(req.url).pathname;
+    console.log(pathname);
 
     if (pathname === '/cats/add-cat' && req.method === 'GET') {
 
-        const filePath = path.normalize(
-            path.join(__dirname, '../views/addCat.html')
-        );
+        const filePath = path.normalize(path.join(__dirname, '../views/addCat.html'));
 
         fs.readFile(filePath, (error, data) => {
 
-            if (error) {
-
-                res.writeHead(404, {
-                    'Content-Type': 'text/plain'
-                });
-
-                res.write('Whoops! File not found!');
-                res.end();
-                return;
-            }
+            helpers.errorGetHandler(error);
 
             const catBreedPlaceholder = breeds.map(breed => `<option value="${breed}">${breed}</option>`);
             const modifiedData = data.toString().replace('{{catBreeds}}', catBreedPlaceholder);
 
-            res.writeHead(200, {
-                'Content-Type': 'text/html'
-            });
+            res.writeHead(200, { 'Content-Type': 'text/html' });
 
             res.write(modifiedData);
             res.end();
         });
     } else if (pathname === '/cats/add-breed' && req.method === 'GET') {
 
-        const filePath = path.normalize(
-            path.join(__dirname, '../views/addBreed.html')
-        );
+        const filePath = path.normalize(path.join(__dirname, '../views/addBreed.html'));
 
         fs.readFile(filePath, (error, data) => {
 
-            if (error) {
+            helpers.errorGetHandler(error);
 
-                res.writeHead(404, {
-                    'Content-Type': 'text/plain'
-                });
-
-                res.write('Whoops! File not found!');
-                res.end();
-                return;
-            }
-
-            res.writeHead(200, {
-                'Content-Type': 'text/html'
-            });
+            res.writeHead(200, { 'Content-Type': 'text/html' });
 
             res.write(data);
             res.end();
         });
     } else if (pathname.includes('/cats-edit') && req.method === 'GET') {
 
-        const id = Number(req.url.split('/cats-edit/').filter(el => el !== '')[0]);
+        const id = Number(req.url.split('/').pop());
         const editedCat = cats.find(cat => cat.id === id);
+
         const filePath = path.normalize(path.join(__dirname, '../views/editCat.html'));
 
         fs.readFile(filePath, (error, data) => {
-            if (error) {
-                res.writeHead(404, {
-                    'Content-Type': 'text/plain'
-                });
-                res.write('Whoops! File not found!');
-                res.end();
-                return;
-            }
 
-            res.writeHead(200, {
-                'Content-Type': 'text/html'
-            });
+            helpers.errorGetHandler(error);
+
+            res.writeHead(200, { 'Content-Type': 'text/html' });
 
             const catBreedPlaceholder = breeds.map(breed => {
                 return breed === editedCat.breed
@@ -102,23 +71,16 @@ module.exports = (req, res) => {
         });
     } else if (pathname.includes('/cats-find-new-home') && req.method === 'GET') {
 
-        const id = Number(req.url.split('/cats-find-new-home/').filter(el => el !== '')[0]);
+        const id = Number(req.url.split('/').pop());
         const catFindNewHome = cats.find(cat => cat.id === id);
+
         const filePath = path.normalize(path.join(__dirname, '../views/catShelter.html'));
 
         fs.readFile(filePath, (error, data) => {
-            if (error) {
-                res.writeHead(404, {
-                    'Content-Type': 'text/plain'
-                });
-                res.write('Whoops! File not found!');
-                res.end();
-                return;
-            }
 
-            res.writeHead(200, {
-                'Content-Type': 'text/html'
-            });
+            helpers.errorGetHandler(error);
+
+            res.writeHead(200, { 'Content-Type': 'text/html' });
 
             const catBreedPlaceholder = breeds.map(breed => {
                 return breed === catFindNewHome.breed
@@ -149,9 +111,7 @@ module.exports = (req, res) => {
 
             fs.readFile('./data/breeds.json', (error, data) => {
 
-                if (error) {
-                    throw error;
-                }
+                helpers.errorPostHandler(error);
 
                 if (body.breed !== '') {
 
@@ -175,10 +135,7 @@ module.exports = (req, res) => {
 
         form.parse(req, (error, fields, files) => {
 
-            if (error) {
-                console.log(error);
-                throw error;
-            }
+            helpers.errorPostHandler(error)
 
             let oldPath = files.upload.path;
             let newPath = path.normalize(path.join(__dirname, '../content/images/' + files.upload.name));
@@ -189,10 +146,7 @@ module.exports = (req, res) => {
 
             fs.readFile('./data/cats.json', 'utf-8', (err, data) => {
 
-                if (err) {
-                    console.log(err);
-                    throw err;
-                }
+                helpers.errorPostHandler(error)
 
                 let allCats = JSON.parse(data);
                 allCats.push({ id: allCats.length + 1, ...fields, image: files.upload.name });
@@ -206,16 +160,13 @@ module.exports = (req, res) => {
         });
     } else if (pathname.includes('/cats-edit') && req.method === 'POST') {
 
-        const id = Number(req.url.split('/cats-edit/').filter(el => el !== '')[0]);
+        const id = Number(req.url.split('/').pop());
 
         let form = new formidable.IncomingForm();
 
         form.parse(req, (error, fields, files) => {
-            console.log(fields);
-            if (error) {
-                console.log(error);
-                throw error;
-            }
+
+            helpers.errorPostHandler(error)
 
             let oldPath = files.upload.path;
             let newPath = path.normalize(path.join(__dirname, '../content/images/' + files.upload.name));
@@ -226,10 +177,7 @@ module.exports = (req, res) => {
 
             fs.readFile('./data/cats.json', 'utf-8', (err, data) => {
 
-                if (err) {
-                    console.log(err);
-                    throw err;
-                }
+                helpers.errorPostHandler(error)
 
                 let allCats = JSON.parse(data);
                 allCats = allCats.map(cat => {
@@ -245,28 +193,24 @@ module.exports = (req, res) => {
         });
     } else if (pathname.includes('/cats-find-new-home') && req.method === 'POST') {
 
-        const id = Number(req.url.split('/cats-find-new-home/').filter(el => el !== '')[0]);
-        console.log(id);
-        
-        fs.readFile('./data/cats.json', 'utf-8', (err, data) => {
+        const id = Number(req.url.split('/').pop());
 
-            if (err) {
-                console.log(err);
-                throw err;
-            }
+        fs.readFile('./data/cats.json', 'utf-8', (error, data) => {
 
-            let allCats = JSON.parse(data);
-            allCats = allCats.filter(cat => cat.id !== id);
-            const json = JSON.stringify(allCats);
+            helpers.errorPostHandler(error)
+
+            const allCats = JSON.parse(data);
+            const modifiedAllCats = allCats.filter(cat => cat.id !== id);
+            const json = JSON.stringify(modifiedAllCats);
             console.log(json)
             fs.writeFile('./data/cats.json', json, () => {
                 res.writeHead(301, { location: '/' });
                 res.end();
             });
-    });
-} else {
-    return true;
-}
+        });
+    } else {
+        return true;
+    }
 }
 
 

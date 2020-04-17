@@ -1,24 +1,18 @@
 const url = require('url');
 const fs = require('fs');
 const path = require('path');
-const cats = require('../data/cats');
+const cats = require('../data/cats.json');
+const helpers = require('./helpers');
 
 module.exports = (req, res) => {
     const pathname = url.parse(req.url).pathname;
+
     if (pathname === '/' && req.method === 'GET') {
-        const filePath = path.normalize(
-            path.join(__dirname, '../views/home/index.html')
-        );
+        const filePath = path.normalize(path.join(__dirname, '../views/home/index.html'));
 
         fs.readFile(filePath, (error, data) => {
-            if (error) {
-                res.writeHead(404, {
-                    'Content-Type': 'text/plain'
-                });
-                res.write('Whoops! File not found!');
-                res.end();
-                return;
-            }
+
+            helpers.errorGetHandler(error);
 
             res.writeHead(200, {
                 'Content-Type': 'text/html'
@@ -34,6 +28,7 @@ module.exports = (req, res) => {
 						<li class="btn delete"><a href="/cats-find-new-home/${cat.id}">New Home</a></li>
 					</ul>
                 </li>`)
+
             let modfiedData = data.toString().replace('{{cats}}', modifiedCats);
             res.write(modfiedData);
             res.end();

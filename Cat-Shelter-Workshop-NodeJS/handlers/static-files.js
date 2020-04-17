@@ -1,5 +1,6 @@
 const url = require('url');
 const fs = require('fs');
+const helpers = require('./helpers')
 
 function getContentType(url) {
     if (url.endsWith('css')) {
@@ -26,19 +27,8 @@ module.exports = (req, res) => {
 
             fs.readFile(`./${pathname}`, (error, data) => {
 
-                if (error) {
-                    console.log(error);
+                helpers.errorGetHandler(error);
 
-                    res.writeHead(404, {
-                        'Content-Type': 'text/plain'
-                    });
-
-                    res.write('Whoops! File not found!');
-                    res.end();
-                    return;
-                }
-
-                console.log(pathname);
                 res.writeHead(200, {
                     'Content-Type': getContentType(pathname)
                 });
@@ -51,19 +41,8 @@ module.exports = (req, res) => {
 
             fs.readFile(`./${pathname}`, 'utf-8', (error, data) => {
 
-                if (error) {
-                    console.log(error);
+                helpers.errorGetHandler(error);
 
-                    res.writeHead(404, {
-                        'Content-Type': 'text/plain'
-                    });
-
-                    res.write('Whoops! File not found!');
-                    res.end();
-                    return;
-                }
-
-                console.log(pathname);
                 res.writeHead(200, {
                     'Content-Type': getContentType(pathname)
                 });
