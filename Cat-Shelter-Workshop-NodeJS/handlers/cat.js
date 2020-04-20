@@ -236,11 +236,19 @@ module.exports = (req, res) => {
             const allCats = JSON.parse(data);
             const modifiedAllCats = allCats.filter(cat => cat.id !== id);
             const json = JSON.stringify(modifiedAllCats);
-            console.log(json)
+            const catImageFileName = allCats.find(cat => cat.id === id).image;
+            const catImageFilePath = path.normalize(path.join(__dirname, '../content/images/' + catImageFileName));
+
+            if (!modifiedAllCats.find(cat => cat.image === catImageFileName)) {
+                fs.unlink(catImageFilePath, error => {
+                    helpers.errorPostHandler(error)
+                });
+            }
             fs.writeFile('./data/cats.json', json, () => {
                 res.writeHead(301, { location: '/' });
                 res.end();
             });
+
         });
     } else {
         return true;
