@@ -1,7 +1,7 @@
 const url = require('url');
 const fs = require('fs');
 const path = require('path');
-const cats = require('../data/cats.json');
+// const cats = require('../data/cats.json');
 const helpers = require('./helpers');
 
 module.exports = (req, res) => {
@@ -10,15 +10,20 @@ module.exports = (req, res) => {
     if (pathname === '/' && req.method === 'GET') {
         const filePath = path.normalize(path.join(__dirname, '../views/home/index.html'));
 
-        fs.readFile(filePath, (error, data) => {
+        fs.readFile('./data/cats.json', 'utf-8', (error, data) => {
 
-            helpers.errorGetHandler(error);
+            helpers.errorPostHandler(error)
 
-            res.writeHead(200, {
-                'Content-Type': 'text/html'
-            });
+            let allCats = JSON.parse(data);
+            fs.readFile(filePath, (error, data) => {
 
-            let modifiedCats = cats.map(cat => `<li>
+                helpers.errorGetHandler(error);
+
+                res.writeHead(200, {
+                    'Content-Type': 'text/html'
+                });
+
+                let modifiedCats = allCats.map(cat => `<li>
             <img src="${path.join('/content/images/' + cat.image)}" alt="${cat.name}">
             <h3>${cat.name}</h3>
 					<p><span>Breed: </span>${cat.breed}</p>
@@ -29,9 +34,11 @@ module.exports = (req, res) => {
 					</ul>
                 </li>`)
 
-            let modfiedData = data.toString().replace('{{cats}}', modifiedCats);
-            res.write(modfiedData);
-            res.end();
+                let modfiedData = data.toString().replace('{{cats}}', modifiedCats);
+                res.write(modfiedData);
+                res.end();
+
+            });
         });
     } else {
         return true;

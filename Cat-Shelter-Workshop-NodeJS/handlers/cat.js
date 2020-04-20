@@ -1,8 +1,8 @@
 const url = require('url');
 const fs = require('fs');
 const path = require('path');
-const cats = require('../data/cats.json');
-const breeds = require('../data/breeds.json');
+// const cats = require('../data/cats.json');
+// const breeds = require('../data/breeds.json');
 const qs = require('querystring');
 const formidable = require('formidable');
 const helpers = require('./helpers');
@@ -10,23 +10,29 @@ const helpers = require('./helpers');
 module.exports = (req, res) => {
 
     const pathname = url.parse(req.url).pathname;
-    console.log(pathname);
 
     if (pathname === '/cats/add-cat' && req.method === 'GET') {
 
         const filePath = path.normalize(path.join(__dirname, '../views/addCat.html'));
 
-        fs.readFile(filePath, (error, data) => {
+        fs.readFile('./data/breeds.json', 'utf-8', (error, data) => {
 
             helpers.errorGetHandler(error);
 
-            const catBreedPlaceholder = breeds.map(breed => `<option value="${breed}">${breed}</option>`);
-            const modifiedData = data.toString().replace('{{catBreeds}}', catBreedPlaceholder);
+            const breeds = JSON.parse(data);
 
-            res.writeHead(200, { 'Content-Type': 'text/html' });
+            fs.readFile(filePath, (error, data) => {
 
-            res.write(modifiedData);
-            res.end();
+                helpers.errorGetHandler(error);
+
+                const catBreedPlaceholder = breeds.map(breed => `<option value="${breed}">${breed}</option>`);
+                const modifiedData = data.toString().replace('{{catBreeds}}', catBreedPlaceholder);
+
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+
+                res.write(modifiedData);
+                res.end();
+            });
         });
     } else if (pathname === '/cats/add-breed' && req.method === 'GET') {
 
@@ -44,58 +50,87 @@ module.exports = (req, res) => {
     } else if (pathname.includes('/cats-edit') && req.method === 'GET') {
 
         const id = Number(req.url.split('/').pop());
-        const editedCat = cats.find(cat => cat.id === id);
 
-        const filePath = path.normalize(path.join(__dirname, '../views/editCat.html'));
+        fs.readFile('./data/cats.json', 'utf-8', (error, data) => {
 
-        fs.readFile(filePath, (error, data) => {
+            helpers.errorPostHandler(error)
 
-            helpers.errorGetHandler(error);
+            let allCats = JSON.parse(data);
 
-            res.writeHead(200, { 'Content-Type': 'text/html' });
+            const editedCat = allCats.find(cat => cat.id === id);
 
-            const catBreedPlaceholder = breeds.map(breed => {
-                return breed === editedCat.breed
-                    ? `<option value="${breed}" selected="selected">${breed}</option>`
-                    : `<option value="${breed}">${breed}</option>`
-            }).join('');
+            fs.readFile('./data/breeds.json', 'utf-8', (error, data) => {
 
-            let modifiedCat = data.toString().replace('{{id}}', id);
-            modifiedCat = modifiedCat.toString().replace('{{name}}', editedCat.name);
-            modifiedCat = modifiedCat.toString().replace('{{description}}', editedCat.description);
-            modifiedCat = modifiedCat.toString().replace('{{image}}', editedCat.image);
-            modifiedCat = modifiedCat.toString().replace('{{catBreeds}}', catBreedPlaceholder);
+                helpers.errorPostHandler(error)
 
-            res.write(modifiedCat);
-            res.end();
+                const breeds = JSON.parse(data);
+
+                const filePath = path.normalize(path.join(__dirname, '../views/editCat.html'));
+
+                fs.readFile(filePath, (error, data) => {
+
+                    helpers.errorGetHandler(error);
+
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+
+                    const catBreedPlaceholder = breeds.map(breed => {
+                        return breed === editedCat.breed
+                            ? `<option value="${breed}" selected="selected">${breed}</option>`
+                            : `<option value="${breed}">${breed}</option>`
+                    }).join('');
+
+                    let modifiedCat = data.toString().replace('{{id}}', id);
+                    modifiedCat = modifiedCat.toString().replace('{{name}}', editedCat.name);
+                    modifiedCat = modifiedCat.toString().replace('{{description}}', editedCat.description);
+                    modifiedCat = modifiedCat.toString().replace('{{image}}', editedCat.image);
+                    modifiedCat = modifiedCat.toString().replace('{{catBreeds}}', catBreedPlaceholder);
+
+                    res.write(modifiedCat);
+                    res.end();
+                });
+            });
         });
     } else if (pathname.includes('/cats-find-new-home') && req.method === 'GET') {
 
         const id = Number(req.url.split('/').pop());
-        const catFindNewHome = cats.find(cat => cat.id === id);
 
-        const filePath = path.normalize(path.join(__dirname, '../views/catShelter.html'));
+        fs.readFile('./data/cats.json', 'utf-8', (error, data) => {
 
-        fs.readFile(filePath, (error, data) => {
+            helpers.errorPostHandler(error)
 
-            helpers.errorGetHandler(error);
+            let allCats = JSON.parse(data);
+            const catFindNewHome = allCats.find(cat => cat.id === id);
 
-            res.writeHead(200, { 'Content-Type': 'text/html' });
+            fs.readFile('./data/breeds.json', 'utf-8', (error, data) => {
 
-            const catBreedPlaceholder = breeds.map(breed => {
-                return breed === catFindNewHome.breed
-                    ? `<option value="${breed}" selected="selected">${breed}</option>`
-                    : `<option value="${breed}">${breed}</option>`
-            }).join('');
+                helpers.errorPostHandler(error)
 
-            let modifiedCat = data.toString().replace('{{id}}', id);
-            modifiedCat = modifiedCat.toString().replace('{{name}}', catFindNewHome.name);
-            modifiedCat = modifiedCat.toString().replace('{{description}}', catFindNewHome.description);
-            modifiedCat = modifiedCat.toString().replace('{{image}}', catFindNewHome.image);
-            modifiedCat = modifiedCat.toString().replace('{{catBreeds}}', catBreedPlaceholder);
+                const breeds = JSON.parse(data);
 
-            res.write(modifiedCat);
-            res.end();
+                const filePath = path.normalize(path.join(__dirname, '../views/catShelter.html'));
+
+                fs.readFile(filePath, (error, data) => {
+
+                    helpers.errorGetHandler(error);
+
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+
+                    const catBreedPlaceholder = breeds.map(breed => {
+                        return breed === catFindNewHome.breed
+                            ? `<option value="${breed}" selected="selected">${breed}</option>`
+                            : `<option value="${breed}">${breed}</option>`
+                    }).join('');
+
+                    let modifiedCat = data.toString().replace('{{id}}', id);
+                    modifiedCat = modifiedCat.toString().replace('{{name}}', catFindNewHome.name);
+                    modifiedCat = modifiedCat.toString().replace('{{description}}', catFindNewHome.description);
+                    modifiedCat = modifiedCat.toString().replace('{{image}}', catFindNewHome.image);
+                    modifiedCat = modifiedCat.toString().replace('{{catBreeds}}', catBreedPlaceholder);
+
+                    res.write(modifiedCat);
+                    res.end();
+                });
+            });
         });
     } else if (pathname === '/cats/add-breed' && req.method === 'POST') {
 
@@ -136,7 +171,6 @@ module.exports = (req, res) => {
         form.parse(req, (error, fields, files) => {
 
             helpers.errorPostHandler(error)
-
             let oldPath = files.upload.path;
             let newPath = path.normalize(path.join(__dirname, '../content/images/' + files.upload.name));
 
@@ -144,7 +178,7 @@ module.exports = (req, res) => {
                 console.log('File was uploaded successfully!');
             });
 
-            fs.readFile('./data/cats.json', 'utf-8', (err, data) => {
+            fs.readFile('./data/cats.json', 'utf-8', (error, data) => {
 
                 helpers.errorPostHandler(error)
 
