@@ -6,6 +6,18 @@ function getAllCubes(req, res, next) {
     }).catch(next)
 }
 
+function searchCubes(req, res, next) {
+    const { search, from, to } = req.body;
+    cubeModel.getAll().then(cubes => {
+        const filteredCubes = cubes.filter(cube => {
+            return (from !== "" && to !== "")
+                ? cube.name.toLowerCase().includes(search.toLowerCase()) && cube.difficultyLevel >= Number(from) && cube.difficultyLevel <= Number(to)
+                : cube.name.toLowerCase().includes(search.toLowerCase())
+        })
+        res.render('index.hbs', { cubes: filteredCubes.length > 0 ? filteredCubes : cubes });
+    }).catch(next)
+}
+
 function getCube(req, res, next) {
     const id = +req.params.id;
     cubeModel.getOne(id).then(cube => {
@@ -34,6 +46,7 @@ function postCreate(req, res, next) {
 
 module.exports = {
     getAllCubes,
+    searchCubes,
     getCube,
     getCreate,
     postCreate
