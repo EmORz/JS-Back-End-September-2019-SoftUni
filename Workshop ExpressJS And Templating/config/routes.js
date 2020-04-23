@@ -5,6 +5,8 @@ module.exports = (app) => {
 
     app.get('/', cubeControlers.getAllCubes)
 
+    app.post('/', cubeControlers.searchCubes)
+
     app.get('/details/:id', cubeControlers.getCube)
 
     app.get('/about', otherControlers.getAbout)
