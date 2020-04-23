@@ -10,17 +10,10 @@
 
 <body>
   <div class="container">
-    <header>
-      <ul>
-        <li><img class="logo" src="/images/logo.png"></li>
-        <li><a href="/">Browse</a></li>
-        <li><a href="/create">Add a Cube</a></li>
-        <li><a href="/about">About</a></li>
-      </ul>
-    </header>
+    {{> header}}
     <main>
       <h1>Browser</h1>
-      <form action="" method="">
+      <form action="/" method="POST">
         <input type="text" class="search" name="search" placeholder="Search...">
         <input type="number" name="from" class="difficulty" placeholder="Difficulty from...">
         <span>-</span>
@@ -37,7 +30,7 @@
       {{/each}}
     </main>
   </div>
-  <footer>@Cubicle: Exercise for Express.js and Handlebars</footer>
+  {{>footer}}
 </body>
 
 </html>
