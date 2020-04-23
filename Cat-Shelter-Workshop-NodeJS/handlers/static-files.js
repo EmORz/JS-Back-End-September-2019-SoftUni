@@ -14,7 +14,7 @@ function getContentType(url) {
     } else if (url.endsWith('jpg') || url.endsWith('jpeg') || url.endsWith('jfif') || url.endsWith('pjpeg') || url.endsWith('pjp')) {
         return 'image/jpeg';
     } else if (url.endsWith('ico') || url.endsWith('cur')) {
-        return 'image/x-icon	'
+        return 'image/x-icon'
     }
 }
 
