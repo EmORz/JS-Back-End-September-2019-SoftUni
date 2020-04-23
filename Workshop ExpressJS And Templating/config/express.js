@@ -7,8 +7,12 @@ const path = require('path');
 module.exports = (app) => {
 
     //TODO: Setup the view engine
-    app.engine('.hbs', handlebars({ extname: '.hbs', defaultLayout: false }));
-    app.set('views', path.resolve(path.dirname(__dirname), './views'));
+    app.engine('.hbs', handlebars({
+        extname: '.hbs',
+        defaultLayout: false,
+        layoutsDir: path.resolve(path.dirname(__dirname), 'views')
+    }));
+    app.set('view engine', '.hbs');
 
     //TODO: Setup the body parser
     app.use(bodyParser.urlencoded({ extended: false }));
