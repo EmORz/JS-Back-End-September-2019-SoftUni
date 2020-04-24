@@ -28,7 +28,6 @@ function postRegister(req, res) {
         console.log(error);
         res.redirect('/register');
     });
-
 }
 
 function addToken(req, res, next) {
