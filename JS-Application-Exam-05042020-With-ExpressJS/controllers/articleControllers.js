@@ -70,10 +70,25 @@ function postEdit(req, res, next) {
     });
 }
 
+function getDelete(req, res, next) {
+    jwt.verify(res.token, 'my_secret_key', function (err, data) {
+        if (err) {
+            res.redirect('/register');
+            return;
+        }
+        const id = +req.params.id;
+        console.log(id)
+        articleModel.delete(id).then(function () {
+            res.redirect('/');
+        }).catch(next)
+    });
+}
+
 
 module.exports = {
     getAll,
     getDetails,
     getEdit,
-    postEdit
+    postEdit,
+    getDelete
 }
