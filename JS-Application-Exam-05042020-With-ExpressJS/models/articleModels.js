@@ -45,6 +45,21 @@ class ArticleModel {
         }
         return this._write(newArticleData, id);
     }
+
+    add(article) {
+        const idNewArticle = ++this.articleData.lastIndex;
+        const newArticle = Object.assign({}, { id: idNewArticle, ...article });
+        this.articleData.articlesCategory.map(category => {
+            if (category.title === newArticle.category) { newArticle.category = category.descr; }
+        })
+        const newArticleData = {
+            "lastIndex": this.articleData.lastIndex,
+            "articles": this.articleData.articles.slice(0).concat(newArticle),
+            "articlesCategory": this.articleData.articlesCategory.slice(0)
+        }
+
+        return this._write(newArticleData, article);
+    }
 }
 
 module.exports = new ArticleModel();
