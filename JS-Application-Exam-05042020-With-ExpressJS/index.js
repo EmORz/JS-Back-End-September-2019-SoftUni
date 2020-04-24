@@ -1,19 +1,10 @@
-const express = require('express');
-const app = express();
-const port = 8080;
+const env = process.env.NODE_ENV || 'development';
+global.__basedir = __dirname;
 
-const router = express.Router()
+const config = require('./config/config')[env];
+const app = require('express')();
 
-app.use(router);
+require('./config/express')(app);
+require('./config/routes')(app);
 
-router.get('/', (req, res) => {
-    res.send('Proba')
-});
-
-router.get('/stanimir', (req, res)=> {
-    res.send('Stanimir')
-})
-
-app.listen(port, () => {
-    console.log(`Server is listening on port ${port}!`)
-})
+app.listen(config.port, console.log(`Server is listening on port ${config.port}! Now its up to you...`));
