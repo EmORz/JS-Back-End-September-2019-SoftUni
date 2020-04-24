@@ -14,8 +14,9 @@ module.exports = (app) => {
     app.post('/register', userControllers.postRegister)
 
     app.get('/details/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getDetails)
-    
+
     app.get('/edit/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getEdit)
     app.post('/edit/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.postEdit)
 
+    app.get('/delete/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getDelete)
 };
