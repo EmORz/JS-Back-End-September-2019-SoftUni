@@ -19,4 +19,7 @@ module.exports = (app) => {
     app.post('/edit/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.postEdit)
 
     app.get('/delete/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getDelete)
+
+    app.get('/create', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getCreate)
+    app.post('/create', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.postCreate)
 };
