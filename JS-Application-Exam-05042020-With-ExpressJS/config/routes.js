@@ -3,7 +3,7 @@ const articleControllers = require('../controllers/articleControllers');
 
 module.exports = (app) => {
 
-    app.get('/home', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getAll);
+    app.get('/', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getAll);
 
     app.get('/login', userControllers.getLogin);
     app.post('/login', userControllers.postLogin, userControllers.setCookie);
@@ -12,6 +12,10 @@ module.exports = (app) => {
 
     app.get('/register', userControllers.getRegister)
     app.post('/register', userControllers.postRegister)
-    // app.post('/login')
+
+    app.get('/details/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getDetails)
+    
+    app.get('/edit/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getEdit)
+    app.post('/edit/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.postEdit)
 
 };
