@@ -77,10 +77,38 @@ function getDelete(req, res, next) {
             return;
         }
         const id = +req.params.id;
-        console.log(id)
         articleModel.delete(id).then(function () {
             res.redirect('/');
         }).catch(next)
+    });
+}
+
+function getCreate(req, res) {
+    jwt.verify(res.token, 'my_secret_key', function (err, data) {
+        if (err) {
+            res.redirect('/register');
+            return;
+        }
+        const { isLogged } = res.body;
+        res.render('create', { isLogged });
+    });
+}
+
+function postCreate(req, res, next) {
+    jwt.verify(res.token, 'my_secret_key', function (err, data) {
+        if (err) {
+            res.redirect('/login');
+            return;
+        }
+        const newArticle = req.body;
+        newArticle['creator-email'] = data.user.email;
+        articleModel.add(newArticle).then(u => {
+            res.redirect('/');
+        }).catch(error => {
+            console.log(error);
+            res.redirect('/login');
+        });
+
     });
 }
 
@@ -90,5 +118,7 @@ module.exports = {
     getDetails,
     getEdit,
     postEdit,
-    getDelete
+    getDelete,
+    getCreate,
+    postCreate
 }
