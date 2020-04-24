@@ -1,0 +1,13 @@
+{
+    "lastIndex": 1,
+    "articles": [
+        {
+            "id": 1,
+            "title": "Arrays",
+            "category": "JavaScript",
+            "content": "Lorem ipsum dolor sit amet, consectetur...",
+            "imageURL": "https://media.geeksforgeeks.org/wp-content/uploads/C-Arrays.jpg",
+            "creator-email": "peter.georgiev@email.com"
+        }
+    ]
+}
