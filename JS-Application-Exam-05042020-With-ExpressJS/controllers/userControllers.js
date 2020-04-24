@@ -74,7 +74,7 @@ function isLogged(req, res, next) {
 function setCookie(req, res) {
     const user = Object.assign({}, res.body);
     res.cookie('user', user);
-    res.redirect('/home')
+    res.redirect('/')
 }
 
 
