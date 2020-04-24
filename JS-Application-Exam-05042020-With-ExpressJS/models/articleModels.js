@@ -36,6 +36,15 @@ class ArticleModel {
         }
         return this._write(newArticleData, article);
     }
+
+    delete(id) {
+        const newArticleData = {
+            "lastIndex": this.articleData.lastIndex,
+            "articles": this.articleData.articles.filter(art => art.id !== id),
+            "articlesCategory": this.articleData.articlesCategory.slice(0)
+        }
+        return this._write(newArticleData, id);
+    }
 }
 
 module.exports = new ArticleModel();
