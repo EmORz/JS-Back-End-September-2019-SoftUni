@@ -36,7 +36,7 @@ function getDetails(req, res, next) {
         const { isLogged } = res.body;
         const id = +req.params.id;
         articleModel.getOneArticle(id).then(function (article) {
-            const isAuthor = useremail===article['creator-email'];
+            const isAuthor = useremail === article['creator-email'];
             res.render('details.hbs', { article, isLogged, isAuthor });
         }).catch(next)
     });
@@ -48,29 +48,26 @@ function getEdit(req, res, next) {
             res.redirect('/register');
             return;
         }
-        // const useremail = data.user.email;
         const { isLogged } = res.body;
         const id = +req.params.id;
         articleModel.getOneArticle(id).then(function (article) {
-            // const isAuthor = useremail===article['creator-email'];
             res.render('edit.hbs', { article, isLogged });
         }).catch(next)
     });
 }
 
 function postEdit(req, res, next) {
-    // jwt.verify(res.token, 'my_secret_key', function (err, data) {
-    //     if (err) {
-    //         res.redirect('/register');
-    //         return;
-    //     }
-    //     const { isLogged } = res.body;
-    //     const id = +req.params.id;
-    //     articleModel.getOneArticle(id).then(function (article) {
-    //         res.render('edit.hbs', { article, isLogged });
-    //     }).catch(next)
-    // });
-    res.redirect('/');
+    jwt.verify(res.token, 'my_secret_key', function (err, data) {
+        if (err) {
+            res.redirect('/register');
+            return;
+        }
+        const updatedArticle = req.body;
+        updatedArticle.id = +req.params.id
+        articleModel.changeArticle(updatedArticle).then(function (article) {
+            res.redirect('/');
+        }).catch(next)
+    });
 }
 
 
