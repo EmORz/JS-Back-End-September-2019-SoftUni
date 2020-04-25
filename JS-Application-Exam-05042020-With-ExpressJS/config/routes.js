@@ -1,9 +1,12 @@
 const userControllers = require('../controllers/userControllers');
 const articleControllers = require('../controllers/articleControllers');
+const express = require('express');
+const checkAuth = express.Router();
+checkAuth.use(userControllers.isLogged, userControllers.addToken, userControllers.ensureToken);
 
 module.exports = (app) => {
 
-    app.get('/', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getAll);
+    app.get('/', checkAuth, articleControllers.getAll);
 
     app.route('/login')
         .get(userControllers.getLogin)
@@ -15,15 +18,15 @@ module.exports = (app) => {
         .get(userControllers.getRegister)
         .post(userControllers.postRegister)
 
-    app.get('/details/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getDetails)
+    app.get('/details/:id', checkAuth, articleControllers.getDetails)
 
     app.route('/edit/:id')
-        .get(userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getEdit)
-        .post(userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.postEdit)
+        .get(checkAuth, articleControllers.getEdit)
+        .post(checkAuth, articleControllers.postEdit)
 
-    app.get('/delete/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getDelete)
+    app.get('/delete/:id', checkAuth, articleControllers.getDelete)
 
     app.route('/create')
-        .get(userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getCreate)
-        .post(userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.postCreate)
+        .get(checkAuth, articleControllers.getCreate)
+        .post(checkAuth, articleControllers.postCreate)
 };
