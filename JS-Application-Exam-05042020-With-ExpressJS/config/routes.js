@@ -5,21 +5,25 @@ module.exports = (app) => {
 
     app.get('/', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getAll);
 
-    app.get('/login', userControllers.getLogin);
-    app.post('/login', userControllers.postLogin, userControllers.setCookie);
+    app.route('/login')
+        .get(userControllers.getLogin)
+        .post(userControllers.postLogin, userControllers.setCookie);
+
     app.get('/logout', userControllers.getLogout);
 
-
-    app.get('/register', userControllers.getRegister)
-    app.post('/register', userControllers.postRegister)
+    app.route('/register')
+        .get(userControllers.getRegister)
+        .post(userControllers.postRegister)
 
     app.get('/details/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getDetails)
 
-    app.get('/edit/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getEdit)
-    app.post('/edit/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.postEdit)
+    app.route('/edit/:id')
+        .get(userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getEdit)
+        .post(userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.postEdit)
 
     app.get('/delete/:id', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getDelete)
 
-    app.get('/create', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getCreate)
-    app.post('/create', userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.postCreate)
+    app.route('/create')
+        .get(userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.getCreate)
+        .post(userControllers.isLogged, userControllers.addToken, userControllers.ensureToken, articleControllers.postCreate)
 };
