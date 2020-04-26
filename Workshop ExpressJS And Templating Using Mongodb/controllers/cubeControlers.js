@@ -1,4 +1,3 @@
-// const cubeModel = require('../models/_cube');
 const cubeModel = require('../models/cube');
 
 function getAllCubes(req, res, next) {
