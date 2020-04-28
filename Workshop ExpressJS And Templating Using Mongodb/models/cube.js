@@ -7,7 +7,8 @@ const cubeSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true
+        required: true,
+        maxlength: 250
     },
     imageUrl: {
         type: String,
@@ -15,12 +16,17 @@ const cubeSchema = new mongoose.Schema({
     },
     difficultyLevel: {
         type: Number,
-        required: true
-    }
+        required: true,
+        min: 1,
+        max: 6
+    },
+    accessories: [{ type: mongoose.Types.ObjectId, ref: 'Accessory' }]
 })
 
-cubeSchema.methods.getDescription = function () {
-    return this.description;
-}
+cubeSchema.path('imageUrl')
+    .validate(function () {
+        return this.imageUrl.match(/^http[s]?:\/\/.+/gi)
+    }, 'Image URL must start with http or https!')
+
 
 module.exports = mongoose.model('Cube', cubeSchema);
