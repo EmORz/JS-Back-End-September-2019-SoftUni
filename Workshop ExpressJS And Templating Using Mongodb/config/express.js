@@ -12,8 +12,9 @@ module.exports = (app) => {
     app.engine('.hbs', expressHandlebars({
         handlebars: allowInsecurePrototypeAccess(Handlebars),
         extname: '.hbs',
-        defaultLayout: false,
-        layoutsDir: path.resolve(path.dirname(__dirname), 'views')
+        // defaultLayout: false,
+        // layoutsDir: path.resolve(path.dirname(__dirname), 'views'),
+        defaultLayout: 'main',
     }));
     app.set('view engine', '.hbs');
 
