@@ -1,22 +1,31 @@
-const { cubeControlers, accessoryControlers, otherControlers } = require('../controllers');
+const { cubeControllers, accessoryControllers, otherControllers, userControllers } = require('../controllers');
+const { auth } = require('../utils')
 
 module.exports = (app) => {
 
-    app.get('/', cubeControlers.getAllCubes)
-    app.post('/', cubeControlers.searchCubes)
+    app.get('/', auth(false), cubeControllers.getAllCubes)
+    app.post('/', auth(false), cubeControllers.searchCubes)
 
-    app.get('/details/:id', cubeControlers.getCube)
+    app.get('/register', userControllers.getRegister)
+    app.post('/register', userControllers.postRegister)
+    app.get('/login', userControllers.getLogin)
+    app.post('/login', userControllers.postLogin)
+    app.get('/logout', userControllers.getLogout)
 
-    app.get('/about', otherControlers.getAbout)
+    app.get('/details/:id', auth(), cubeControllers.getCube)
+    app.get('/create', auth(), cubeControllers.getCreate)
+    app.post('/create', auth(), cubeControllers.postCreate)
+    app.get('/edit/:id', auth(), cubeControllers.getEdit)
+    app.post('/edit/:id', auth(), cubeControllers.postEdit)
+    app.get('/delete/:id', auth(), cubeControllers.getDelete)
+    app.post('/delete/:id', auth(), cubeControllers.postDelete)
 
-    app.get('/create', cubeControlers.getCreate)
-    app.post('/create', cubeControlers.postCreate)
+    app.get('/create/accessory', auth(), accessoryControllers.getCreate)
+    app.post('/create/accessory', auth(), accessoryControllers.postCreate)
+    app.get('/attach/accessory/:id', auth(), accessoryControllers.getAttach)
+    app.post('/attach/accessory/:id', auth(), accessoryControllers.postAttach)
 
-    app.get('/create/accessory', accessoryControlers.getCreate)
-    app.post('/create/accessory', accessoryControlers.postCreate)
+    app.get('/about', auth(false), otherControllers.getAbout)
 
-    app.get('/attach/accessory/:id', accessoryControlers.getAttach)
-    app.post('/attach/accessory/:id', accessoryControlers.postAttach)
-
-    app.all('*', otherControlers.notFound)
+    app.all('*', auth(), otherControllers.notFound)
 };
