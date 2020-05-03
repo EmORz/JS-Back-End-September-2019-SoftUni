@@ -1,7 +1,8 @@
-const {accessoryModel, cubeModel} = require('../models');
+const { accessoryModel, cubeModel } = require('../models');
 
 function getCreate(req, res, next) {
-    res.render('createAccessory.hbs');
+    const user = req.user;
+    res.render('createAccessory.hbs', { user });
 }
 
 function postCreate(req, res, next) {
@@ -13,9 +14,10 @@ function postCreate(req, res, next) {
 
 function getAttach(req, res, next) {
     const { id: cubeId } = req.params;
+    const user = req.user;
     cubeModel.findById(cubeId).then(
         cube => Promise.all([cube, accessoryModel.find({ cubes: { $nin: cube._id } })])
-            .then(([cube, filterAccessories]) => res.render('attachAccessory.hbs', { accessories: filterAccessories, cube }))
+            .then(([cube, filterAccessories]) => res.render('attachAccessory.hbs', { accessories: filterAccessories, cube, user }))
             .catch(next));
 }
 
