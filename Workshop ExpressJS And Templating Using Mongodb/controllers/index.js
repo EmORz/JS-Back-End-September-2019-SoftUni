@@ -1,5 +1,7 @@
-const cubeControlers = require('./cubeControlers');
-const accessoryControlers = require('./accessoryControllers')
-const otherControlers = require('./otherControlers')
+const cubeControllers = require('./cubeControllers');
+const accessoryControllers = require('./accessoryControllers')
+const otherControllers = require('./otherControllers')
+const userControllers = require('./userControllers')
 
-module.exports = { cubeControlers, accessoryControlers, otherControlers }
+
+module.exports = { cubeControllers, accessoryControllers, otherControllers, userControllers }
