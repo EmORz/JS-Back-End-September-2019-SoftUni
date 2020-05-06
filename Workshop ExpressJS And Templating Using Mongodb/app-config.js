@@ -8,7 +8,27 @@ const difficultyLevel = [
   '6 - Hardcore'
 ];
 
+function renderDificultyLevel(currentLevel) {
+  return difficultyLevel.map(level => {
+    const valueLevel = +level.split(' - ')[0];
+    return valueLevel === Number(currentLevel)
+      ? `<option value="${valueLevel}" selected="selected">${level}</option>`
+      : `<option value="${valueLevel}">${level}</option>`
+  }).join('');
+}
+
+function handleValidationErrors(err, res, template, cube) {
+
+    const cubeDifficultyLevel = renderDificultyLevel(cube.difficultyLevel);
+    res.render(template, {
+      errors: err.errors,
+      cube, cubeDifficultyLevel
+    });
+    return;
+  
+}
 module.exports = {
   authCookieName,
-  difficultyLevel
+  renderDificultyLevel,
+  handleValidationErrors
 }
