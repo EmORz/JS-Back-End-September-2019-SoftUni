@@ -183,7 +183,7 @@ module.exports = (req, res) => {
                 helpers.errorPostHandler(error)
 
                 let allCats = JSON.parse(data);
-                allCats.push({ id: allCats.length + 1, ...fields, image: files.upload.name });
+                allCats.push({ id: allCats[allCats.length-1].id + 1, ...fields, image: files.upload.name });
                 const json = JSON.stringify(allCats);
 
                 fs.writeFile('./data/cats.json', json, () => {
