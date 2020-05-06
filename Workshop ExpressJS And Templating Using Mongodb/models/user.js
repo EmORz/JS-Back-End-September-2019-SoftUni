@@ -6,12 +6,29 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        minlength: [5, 'username length should be at least 5 characters long!'],
+        validate: [
+            {
+                validator: function (v) {
+                    return /^[A-Za-z0-9]+$/.test(v);
+                },
+                message: () => `User name should consists English latters and digits!`
+            }
+        ]
     },
     password: {
         type: String,
         required: true,
-        minlength: 3
+        minlength: [8, 'Password length should be at least 8 characters long!'],
+        validate: [
+            {
+                validator: function (v) {
+                    return /^[A-Za-z0-9]+$/.test(v);
+                },
+                message: () => `Password should consists English latters and digits!`
+            }
+        ]
     }
 })
 
