@@ -9,13 +9,23 @@
 </head>
 
 <body>
+    <div class="container"></div>
     {{> header}}
-    <div class="container">
-        <main>
-            {{{body}}}
-        </main>
+    {{#with errors}}
+    <div id="notifications">
+        <p id="notifications-message">{{username.message}}</p>
+        <p id="notifications-message">{{password.message}}</p>
+        <p id="notifications-message">{{repeatPassword.message}}</p>
+        <p id="notifications-message">{{name.message}}</p>
+        <p id="notifications-message">{{description.message}}</p>
+        <p id="notifications-message">{{imageUrl.message}}</p>
     </div>
+    {{/with}}
+    <main>
+        {{{body}}}
+    </main>
     {{>footer}}
+    </div>
 </body>
 
 </html>
