@@ -11,7 +11,7 @@ dbConnector().then(() => {
 
     app.use(function (err, req, res, next) {
         console.error(err);
-        // res.render('500.hbs', { errorMessage: err.message });
+        res.render('500.hbs', { errorMessage: err.message });
     });
 
     app.listen(config.port, console.log(`Listening on port ${config.port}!`));
