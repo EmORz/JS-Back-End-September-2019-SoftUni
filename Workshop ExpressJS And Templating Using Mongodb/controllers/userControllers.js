@@ -38,7 +38,7 @@ module.exports = {
             }).catch(err => {
                 if (err.name = 'ValidationError') {
                     res.render('register.hbs', {
-                        user,
+                        newUser,
                         errors: err.errors
                     });
                     return
