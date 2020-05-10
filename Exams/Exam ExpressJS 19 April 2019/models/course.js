@@ -19,7 +19,7 @@ const courseSchema = new mongoose.Schema({
   imageUrl: {
     type: String,
     required: true,
-    match: [/^http[s]?:\/\/.+/gi, `imageUrl should starts with http:// or https://!`],
+    match: [/^http[s]?:\/\/.+/, `imageUrl should starts with http:// or https://!`],
   },
   isPublic: {
     type: Boolean,
