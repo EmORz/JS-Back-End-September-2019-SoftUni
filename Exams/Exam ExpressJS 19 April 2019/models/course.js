@@ -19,14 +19,7 @@ const courseSchema = new mongoose.Schema({
   imageUrl: {
     type: String,
     required: true,
-    validate: [
-      {
-        validator: function (v) {
-          return /^http[s]?:\/\/.+/gi.test(v);
-        },
-        message: () => `imageUrl should starts with http:// or https://!`
-      }
-    ]
+    match: [/^http[s]?:\/\/.+/gi, `imageUrl should starts with http:// or https://!`],
   },
   isPublic: {
     type: Boolean,
@@ -36,7 +29,12 @@ const courseSchema = new mongoose.Schema({
     type: Date,
     default: new Date()
   },
-  usersEnrolled: [{ type: ObjectId, ref: 'User' }],
+  usersEnrolled: [
+    {
+      type: ObjectId,
+      ref: 'User'
+    }
+  ],
   creatorId: {
     type: ObjectId,
     required: true
