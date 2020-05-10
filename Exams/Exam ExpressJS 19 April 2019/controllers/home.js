@@ -2,14 +2,17 @@ const config = require('../config/config');
 const models = require('../models');
 
 module.exports = {
+
   get: {
     home: function (req, res, next) {
+
       const hbsObject = {
         pageTitle: 'Home Page',
         isLoggedIn: req.cookies[config.cookie] !== undefined,
         username: req.user ? req.user.username : '',
         courses: ''
-      }
+      };
+
       models.Course.find()
         .then(courses => {
           hbsObject.courses = hbsObject.isLoggedIn
@@ -20,17 +23,22 @@ module.exports = {
         .catch(next);
     }
   },
+
   post: {
     search: function (req, res, next) {
+
       const search = req.body.search.toLowerCase();
+
       models.Course.find().then(courses => {
         const filteredcourses = courses.filter(course => course.title.toLowerCase().includes(search));
+
         const hbsObject = {
           pageTitle: 'Home Page',
           isLoggedIn: req.cookies[config.cookie] !== undefined,
           username: req.user ? req.user.username : '',
           courses: filteredcourses
         }
+        
         res.render('homePage.hbs', hbsObject);
       }).catch(next)
     }
