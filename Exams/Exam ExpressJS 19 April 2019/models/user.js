@@ -11,29 +11,20 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     minlength: [5, 'User name length should be at least 5 characters long!'],
-    validate: [
-      {
-        validator: function (v) {
-          return /^[A-Za-z0-9]+$/.test(v);
-        },
-        message: () => `User name should consists only English latters and digits!`
-      }
-    ]
+    match: [/^[A-Za-z0-9]+$/, `User name should consists only English latters and digits!`]
   },
   password: {
     type: String,
     required: true,
     minlength: [5, 'Password length should be at least 5 characters long!'],
-    validate: [
-      {
-        validator: function (v) {
-          return /^[A-Za-z0-9]+$/.test(v);
-        },
-        message: () => `Password should consists English latters and digits!`
-      }
-    ]
+    match: [/^[A-Za-z0-9]+$/, `Password should consists English latters and digits!`],
   },
-  enrolledCourses: [{ type: ObjectId, ref: 'Course' }]
+  enrolledCourses: [
+    {
+      type: ObjectId,
+      ref: 'Course'
+    }
+  ]
 })
 
 userSchema.pre('save', function (next) {
